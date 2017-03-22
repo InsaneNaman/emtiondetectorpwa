@@ -17,135 +17,109 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../paper-input/paper-input.html">
   <link rel="import" href="../../paper-button/paper-button.html">
-  <link rel="import" href="../../paper-styles/demo-pages.html">
   <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
-  <link rel="import" href="../../paper-menu/paper-menu.html">
-  <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../paper-styles/shadow.html">
   <link rel="import" href="../iron-form.html">
-  <link rel="import" href="simple-element.html">
+  <link rel="import" href="cats-only.html">
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .wide {
+        width: 474px;
+      }
+      iron-form {
+        @apply --shadow-elevation-2dp;
+        padding: 20px;
+      }
+      paper-button {
+        display: inline-block;
+      }
+    </style>
+  </custom-style>
 </head>
-<style>
-  .wide {
-    width: 474px;
-  }
-</style>
 <body unresolved>
-  <div class="horizontal-section-container">
-    <div>
-      <h4>method="get"</h4>
-      <div class="horizontal-section">
-        <form is="iron-form" id="formGet" method="get" action="/">
-          <paper-input name="name" label="Name" required></paper-input>
-          <paper-input name="animal" label="Favourite animal" required></paper-input>
-          <br>
+  <div class="vertical-section-container centered">
+    <h3>Iron-form works with native and custom elements, and can prevent automatic redirection</h3>
+    <demo-snippet>
+      <template>
+        <input type="checkbox" checked onchange="form1.allowRedirect = !this.checked;"> Prevent automatic form redirection<br><br>
 
-          <input type="checkbox" name="food" value="donuts" checked> I like donuts<br>
-          <input type="checkbox" name="food" value="pizza" required> I like pizza<br>
-          <paper-checkbox name="food" value="cheese" required>I like cheese</paper-checkbox><br>
+        <iron-form id="form1">
+          <form action="http://localhost:3000/foo" method="get">
+            <input type="text" name="firstname" value="Mickey">
+            <input type="text" name="lastname" value="Mouse">
+            <cats-only name="cats"></cats-only>
+            <paper-input type="text" name="animal" value="meerkat" label="animal"></paper-input>
+            <br>
+            <input type="checkbox" name="donuts" checked> I like donuts<br>
+            <paper-checkbox name="food" value="pizza" checked>pizza</paper-checkbox>
+            <paper-checkbox name="food" value="cheese">cheese</paper-checkbox>
+            <br><br>
 
-          <paper-dropdown-menu label="Cars" name="cars" required>
-            <paper-menu class="dropdown-content">
-              <paper-item value="volvo">Volvo</paper-item>
-              <paper-item value="saab">Saab</paper-item>
-              <paper-item value="fiat">Fiat</paper-item>
-              <paper-item value="audi">Audi</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
+            <input type="reset" name="reset1" value="Reset"></input>
+            <input type="submit" name="submit1" value="Submit"></input>
+            <button name="button1" value="button">text button</button>
 
-          <p>
-            Sample custom element, not required: <br>
-            <simple-element name="custom-one"></simple-element>
-          </p>
+            <paper-button raised onclick="submitHandler(event)">Submit</paper-button>
+            <paper-button raised onclick="resetHandler(event)">Reset</paper-button>
+          </form>
+        </iron-form>
+      </template>
+    </demo-snippet>
 
-          <p>
-            Sample custom element, required: (look, styling!)<br>
-            <simple-element required name="custom-two"></simple-element><br>
-          </p>
+    <h3>Iron-form respects the novalidate form attribute</h3>
+    <demo-snippet>
+      <template>
+        <iron-form>
+          <form method="get" action="http://localhost:3000/foo" novalidate>
+            <paper-input name="name" label="Name" required></paper-input>
+            <cats-only name="cats"></cats-only>
+            <input name="animal" placeholder="animal" required value="meerkat"><br>
+            <paper-checkbox name="cheese" required>Cheese</paper-checkbox>
+            <br><br>
+            <input type="submit" value="Submit">
 
-          <br><br>
+            <paper-button raised onclick="submitHandler(event)">Submit</paper-button>
+            <paper-button raised onclick="resetHandler(event)">Reset</paper-button>
+          </form>
+        </iron-form>
+      </template>
+    </demo-snippet>
 
-          <paper-button raised
-              onclick="submitHandler(event)">Submit</paper-button>
-          <paper-button raised
-              onclick="resetHandler(event)">Reset</paper-button>
-        </form>
-      </div>
-    </div>
+    <h3>Iron-form respects nested elements</h3>
+    <demo-snippet>
+      <template>
+        <iron-form>
+          <form method="get" action="http://localhost:3000/foo">
+            <p>
+              <input name="name" label="Name" required>
+              <cats-only name="cats"></cats-only>
+              <paper-checkbox name="cheese" required>Cheese</paper-checkbox>
+            </p>
 
-    <div>
-      <h4>method="post"</h4>
-      <div class="horizontal-section">
-        <form is="iron-form" id="formPost" method="post" action="/">
-          <paper-input name="name" label="Name" required></paper-input>
-          <br>
-          <p>Duplicate name <input name="name" required></p>
+            <input type="submit" value="Submit">
 
-          <input type="radio" name="color" value="red" checked>Red<br>
-          <input type="radio" name="color" value="blue" checked>Blue<br>
-          <input type="radio" name="color" value="green">Green<br>
-          <br>
-
-          <label>Cars</label>
-          <select name="cars">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="fiat">Fiat</option>
-            <option value="audi">Audi</option>
-          </select>
-
-          <br><br>
-          <label>Browsers</label>
-          <input list="browsers" name="browsers" required>
-            <datalist id="browsers">
-              <option value="Internet Explorer">
-              <option value="Firefox">
-              <option value="Chrome">
-              <option value="Opera">
-              <option value="Safari">
-            </datalist>
-          <br><br>
-
-          <label>Pick a number</label>
-          <input type="range" name="number" min="1" max="100">
-
-          <br><br><br>
-          <paper-button raised
-              onclick="submitHandler(event)">Submit</paper-button>
-          <button type="submit">Native Submit</button>
-          <button type="reset">Native Reset</button>
-        </form>
-      </div>
-    </div>
-  </div>
-  <br><br>
-  <div class="horizontal-section-container">
-    <div>
-      <h4>Submitted form data</h4>
-      <div class="horizontal-section wide">
-        <div id="output"></div>
-      </div>
-    </div>
+            <paper-button raised onclick="submitHandler(event)">Submit</paper-button>
+            <paper-button raised onclick="resetHandler(event)">Reset</paper-button>
+          </form>
+        </iron-form>
+      </template>
+    </demo-snippet>
   </div>
 
   <script>
-    document.getElementById('formGet').addEventListener('iron-form-submit', display);
-    document.getElementById('formPost').addEventListener('iron-form-submit', display);
-
-    function display(event) {
-      var output = document.getElementById('output');
-      output.innerHTML = JSON.stringify(event.detail);
-    }
-
     function submitHandler(event) {
-      Polymer.dom(event).localTarget.parentElement.submit();
+      // lol, get to the parent iron-form.
+      Polymer.dom(event).localTarget.parentElement.parentElement.submit();
     }
     function resetHandler(event) {
-      Polymer.dom(event).localTarget.parentElement.reset();
+      Polymer.dom(event).localTarget.parentElement.parentElement.reset();
     }
   </script>
 </body>
-
 </html>

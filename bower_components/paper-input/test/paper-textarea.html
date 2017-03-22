@@ -1,5 +1,6 @@
 <!doctype html>
 <!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -72,12 +73,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(input.inputElement.bindValue, input.value, 'inputElement value equals input.value');
       });
 
-      test('empty required input shows error', function() {
+      test('empty required input shows error', function(done) {
         var input = fixture('required');
-        forceXIfStamp(input);
-        var error = Polymer.dom(input.root).querySelector('paper-input-error');
-        assert.ok(error, 'paper-input-error exists');
-        assert.notEqual(getComputedStyle(error).display, 'none', 'error is not display:none');
+
+        // Need to wait a tick to stamp the error message.
+        Polymer.Base.async(function() {
+          var error = Polymer.dom(input.root).querySelector('paper-input-error');
+          assert.ok(error, 'paper-input-error exists');
+          assert.notEqual(getComputedStyle(error).display, 'none', 'error is not display:none');
+          done();
+        }, 1);
       });
 
       test('caret position is preserved', function() {
@@ -123,6 +128,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var container = Polymer.dom(input.root).querySelector('paper-input-container');
         var inputContent = Polymer.dom(container.root).querySelector('.input-content');
         assert.isTrue(inputContent.classList.contains('label-is-floating'), 'label is floating');
+      });
+
+      test('label does not receive pointer events', function() {
+        var input = fixture('always-float-label');
+        var label = Polymer.dom(input.root).querySelector('label');
+        assert.equal(getComputedStyle(label).pointerEvents, 'none');
+      });
+
+      test('no extra space between input and underline', function() {
+        var input = fixture('label');
+        var container = Polymer.dom(input.root).querySelector('paper-input-container');
+        var inputContent = Polymer.dom(container.root).querySelector('.input-content');
+        var ironTextarea = Polymer.dom(input.root).querySelector('iron-autogrow-textarea');
+        assert.equal(inputContent.clientHeight,ironTextarea.clientHeight, 'container and textarea are same height');
       });
     });
 
@@ -188,30 +207,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(input.inputElement.textarea.getAttribute('aria-labelledby'), Polymer.dom(input.root).querySelector('label').id, 'aria-labelledby points to the label');
       });
 
-      test('has aria-describedby for error message', function() {
+      test('has aria-describedby for error message', function(done) {
         var input = fixture('required');
-        forceXIfStamp(input);
-        assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
-        assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-error').id, 'aria-describedby points to the error message');
+
+        // Need to wait a tick to stamp the error message.
+        Polymer.Base.async(function() {
+          assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
+          assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-error').id, 'aria-describedby points to the error message');
+          done();
+        }, 1);
       });
 
-      test('has aria-describedby for character counter', function() {
+      test('has aria-describedby for character counter', function(done) {
         var input = fixture('char-counter');
-        forceXIfStamp(input);
-        assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
-        assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-char-counter').id, 'aria-describedby points to the character counter');
+
+        // Need to wait a tick to stamp the char-counter.
+        Polymer.Base.async(function() {
+          assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
+          assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-char-counter').id, 'aria-describedby points to the character counter');
+          done();
+        }, 1);
       });
 
       test('has aria-describedby for character counter and error', function() {
         var input = fixture('required-char-counter');
-        forceXIfStamp(input);
-        assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
-        assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-error').id + ' ' + Polymer.dom(input.root).querySelector('paper-input-char-counter').id, 'aria-describedby points to the error message and character counter');
+
+        // Need to wait a tick to stamp the char-counter and error message.
+        Polymer.Base.async(function() {
+          assert.isTrue(input.inputElement.textarea.hasAttribute('aria-describedby'));
+          assert.equal(input.inputElement.textarea.getAttribute('aria-describedby'), Polymer.dom(input.root).querySelector('paper-input-error').id + ' ' + Polymer.dom(input.root).querySelector('paper-input-char-counter').id, 'aria-describedby points to the error message and character counter');
+          done();
+        }, 1);
       });
-
     });
-
-
   </script>
 
 </body>

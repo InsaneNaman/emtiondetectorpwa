@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="extrainfo-element">
+    <template>
+
+        <style is="custom-style">
+            section {
+                width: 100%;
+                height: 300px;
+                @apply(--layout-vertical);
+            }
+            section paper-dialog-scrollable {
+                @apply(--layout-flex);
+            }
+            .header {
+                padding: 8px 24px;
+            }
+            .footer {
+                padding: 8px 24px;
+                text-align: right;
+            }
+        </style>
+        <section>
+            <div class="header">More details</div>
+            <paper-dialog-scrollable>
+                <p>hack</p>
+                <p>this shit</p>
+            </paper-dialog-scrollable>
+            <div class="footer">Talking with Microsoft Cognitive Services</div>
+        </section>
+
+    </template>
+    <script>
+        console.log("extrainfo this side");
+        class extrainfoElement extends Polymer.Element{
+            static get is(){
+                return 'extrainfo-element';
+            }
+            static get properties(){
+
+            }
+        }
+        window.customElements.define(extrainfoElement.is, extrainfoElement);
+    </script>
+
+</dom-module>

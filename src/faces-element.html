@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<dom-module id="faces-element">
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment">
+            #imageid {
+                padding: 2%;
+            }
+            .flex-equal-justified {
+                @apply(--layout-horizontal);
+                @apply(--layout-justified);
+                padding-top: 20px;
+            }
+        </style>
+        <div class="container flex-equal-justified">
+            <template is="dom-repeat" items="[1,2,3]">
+                <paper-card image="images/p-logo.png" id="imageid">
+                    <div class="card-content">
+                        <p>Sample Text</p>
+                    </div>
+                </paper-card>
+            </template>
+        </div>
+    </template>
+    <script>
+        console.log("I am included");
+        class facesElement extends Polymer.Element{
+            static get is(){
+                return 'faces-element';
+            }
+            static get properties(){
+
+            }
+        }
+        window.customElements.define(facesElement.is, facesElement);
+    </script>
+
+</dom-module>

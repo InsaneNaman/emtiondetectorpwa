@@ -1,0 +1,155 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="faces-element.html">
+<link rel="import" href="extrainfo-element.html">
+
+
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      #urlinput {
+        width: 80%;
+
+      }
+      #submitbutton {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      paper-button {
+        background-color: var(--paper-grey-500);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
+      paper-button:hover {
+        background-color: var(--paper-grey-500);
+      }
+      paper-card.targetimage {
+        max-height: 500px;
+        max-width: 500px;
+        margin: auto;
+      }
+      .facecontainer {
+        display: flex;
+        margin-top: 30px;
+        margin-bottom: 30px;
+
+
+
+      }
+      paper-card.faces {
+        padding: 2%;
+        max-height: 250px;
+
+
+      }
+    </style>
+
+    <div class="card">
+      
+      <h1>Detect emotion by a specified image URL</h1>
+      <p>Please type or paste an URL to an image below, and click Search button </p>
+      <iron-form>
+        <form id="form" method="post">
+
+        <paper-input always-float-label name="urlinput" label="Enter Url Here" id="urlinput" value="{{myurlinput}}">
+        </paper-input>
+          <paper-button raised type="submit" id="submitbutton" on-tap="handleTap">Submit</paper-button>
+
+
+        </form>
+      </iron-form>
+      <p>The top 3 emotions will be in the list box. For more details on other emotions, please see status. </p>
+    </div>
+    <div class="card">
+      <paper-card class="targetimage" image="../images/p-logo.png"></paper-card>
+      <faces-element></faces-element>
+    </div>
+    <div class="card">
+
+      <extrainfo-element>
+
+      </extrainfo-element>
+    </div>
+    <iron-ajax
+            id="ironajaxid"
+            auto
+            method="POST"
+            url="https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?"
+            headers='{"Content-Type":"application/json","Ocp-Apim-Subscription-Key": "c487031f5ce248f8b70ca70b6133d400"}'
+            handle-as="json"
+            body="{{postbody}}"
+            on-response="handleResponse"
+            last-response="{{ajaxResponse}}"
+            debounce-duration="300"></iron-ajax>
+    <div class="card">
+      <span>{{ajaxResponse.0.scores.anger}}</span>
+    </div>
+  </template>
+
+
+  <script >
+    class MyView1 extends Polymer.GestureEventListeners(Polymer.Element) {
+        static get is() {
+            return 'my-view1';
+        }
+        static get properties() {
+           return {
+               people:{
+                   type:Array,
+                   value:[1,2,3]
+               },
+               postbody:{
+                   type:String,
+                   computed:'postbody(myurlinput)'
+               }
+
+           }
+        }
+        handleResponse(data){
+            console.log("handleresponse");
+            console.log(data.detail.response);
+        }
+        handleTap(){
+            this.$.ironajaxid.generateRequest();
+        }
+
+        postbody(url){
+            console.log("postbody called");
+            url="http://starsunfolded.1ygkv60km.netdna-cdn.com/wp-content/uploads/2016/02/Shirley-Setia-2.jpg";
+            console.log(JSON.stringify({url:url}));
+            //return JSON.stringify({url:url});
+        }
+
+
+
+    }
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>
